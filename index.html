@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Todo List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-in-out',
+                        'slide-in': 'slideIn 0.3s ease-out',
+                        'bounce-in': 'bounceIn 0.5s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateY(-10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        bounceIn: {
+                            '0%': { transform: 'scale(0.3)', opacity: '0' },
+                            '50%': { transform: 'scale(1.05)' },
+                            '70%': { transform: 'scale(0.9)' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8 animate-fade-in">
+            <h1 class="text-5xl font-bold text-white mb-2 drop-shadow-lg">
+                <i class="fas fa-tasks mr-3"></i>Todo List
+            </h1>
+            <p class="text-white/80 text-lg">Stay organized and productive</p>
+        </div>
+
+        <!-- Main Todo Container -->
+        <div class="max-w-2xl mx-auto">
+            <!-- Add Todo Form -->
+            <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 shadow-2xl border border-white/20 animate-slide-in">
+                <div class="flex gap-3">
+                    <input 
+                        type="text" 
+                        id="todoInput" 
+                        placeholder="What needs to be done?" 
+                        class="flex-1 px-4 py-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-transparent transition-all duration-300"
+                    >
+                    <button 
+                        id="addBtn" 
+                        class="px-6 py-3 bg-white/20 hover:bg-white/30 text-white rounded-xl border border-white/30 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white/50"
+                    >
+                        <i class="fas fa-plus mr-2"></i>Add
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="flex justify-center gap-2 mb-6 animate-slide-in">
+                <button class="filter-btn active px-4 py-2 rounded-lg bg-white/20 text-white border border-white/30 transition-all duration-300 hover:bg-white/30" data-filter="all">
+                    All
+                </button>
+                <button class="filter-btn px-4 py-2 rounded-lg bg-white/20 text-white border border-white/30 transition-all duration-300 hover:bg-white/30" data-filter="active">
+                    Active
+                </button>
+                <button class="filter-btn px-4 py-2 rounded-lg bg-white/20 text-white border border-white/30 transition-all duration-300 hover:bg-white/30" data-filter="completed">
+                    Completed
+                </button>
+            </div>
+
+            <!-- Todo List -->
+            <div class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 overflow-hidden animate-slide-in">
+                <div id="todoList" class="divide-y divide-white/10">
+                    <!-- Todos will be inserted here -->
+                </div>
+                
+                <!-- Empty State -->
+                <div id="emptyState" class="text-center py-12 text-white/70">
+                    <i class="fas fa-clipboard-list text-6xl mb-4 opacity-50"></i>
+                    <p class="text-xl">No todos yet</p>
+                    <p class="text-sm mt-2">Add a task above to get started!</p>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="mt-6 text-center text-white/80 animate-fade-in">
+                <p id="stats">0 items left</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Color Customization Panel -->
+    <div id="colorPanel" class="fixed bottom-0 left-0 right-0 bg-black/20 backdrop-blur-lg border-t border-white/20 transform translate-y-full transition-transform duration-300 ease-in-out">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-palette text-white text-xl"></i>
+                    <span class="text-white font-medium">Customize Colors</span>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Preset Color Themes -->
+                    <div class="flex gap-2">
+                        <button class="color-preset w-8 h-8 rounded-full border-2 border-white/30 hover:border-white/60 transition-all duration-300 hover:scale-110"
+                                data-colors="purple-400,pink-500,red-500"
+                                style="background: linear-gradient(135deg, #a855f7, #ec4899, #ef4444)"></button>
+                        <button class="color-preset w-8 h-8 rounded-full border-2 border-white/30 hover:border-white/60 transition-all duration-300 hover:scale-110"
+                                data-colors="blue-400,cyan-500,teal-500"
+                                style="background: linear-gradient(135deg, #60a5fa, #06b6d4, #14b8a6)"></button>
+                        <button class="color-preset w-8 h-8 rounded-full border-2 border-white/30 hover:border-white/60 transition-all duration-300 hover:scale-110"
+                                data-colors="green-400,emerald-500,lime-500"
+                                style="background: linear-gradient(135deg, #4ade80, #10b981, #84cc16)"></button>
+                        <button class="color-preset w-8 h-8 rounded-full border-2 border-white/30 hover:border-white/60 transition-all duration-300 hover:scale-110"
+                                data-colors="orange-400,red-500,pink-500"
+                                style="background: linear-gradient(135deg, #fb923c, #ef4444, #ec4899)"></button>
+                        <button class="color-preset w-8 h-8 rounded-full border-2 border-white/30 hover:border-white/60 transition-all duration-300 hover:scale-110"
+                                data-colors="indigo-400,purple-500,pink-500"
+                                style="background: linear-gradient(135deg, #818cf8, #a855f7, #ec4899)"></button>
+                        <button class="color-preset w-8 h-8 rounded-full border-2 border-white/30 hover:border-white/60 transition-all duration-300 hover:scale-110"
+                                data-colors="gray-600,gray-700,gray-800"
+                                style="background: linear-gradient(135deg, #4b5563, #374151, #1f2937)"></button>
+                    </div>
+
+                    <div class="w-px h-6 bg-white/30"></div>
+
+                    <!-- Custom Color Inputs -->
+                    <div class="flex items-center gap-2">
+                        <label class="text-white text-sm">Custom:</label>
+                        <input type="color" id="color1" value="#a855f7" class="w-8 h-8 rounded border-2 border-white/30 cursor-pointer">
+                        <input type="color" id="color2" value="#ec4899" class="w-8 h-8 rounded border-2 border-white/30 cursor-pointer">
+                        <input type="color" id="color3" value="#ef4444" class="w-8 h-8 rounded border-2 border-white/30 cursor-pointer">
+                        <button id="applyCustom" class="px-3 py-1 bg-white/20 hover:bg-white/30 text-white text-sm rounded border border-white/30 transition-all duration-300">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+
+                <button id="closeColorPanel" class="text-white/70 hover:text-white transition-colors duration-300">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Color Toggle Button -->
+    <button id="colorToggle" class="fixed bottom-6 right-6 w-14 h-14 bg-white/20 backdrop-blur-lg hover:bg-white/30 text-white rounded-full shadow-2xl border border-white/30 transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50">
+        <i class="fas fa-palette text-xl"></i>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>
